@@ -18,7 +18,6 @@
     "url": "https://github.com/KKetter/healthcare_benefits_portal/issues"
   },
   "homepage": "https://github.com/KKetter/healthcare_benefits_portal#readme",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
