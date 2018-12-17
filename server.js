@@ -2,6 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
+const superagent = require('superagent');
 require('dotenv').config();
 const pg = require('pg');
 
