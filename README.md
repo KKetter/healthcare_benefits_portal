@@ -25,5 +25,10 @@
 1200-1300 Lunch Break
   - discussion about value added with HIPA pivot. touched base with BN to discuss this afternoon
 
-1400 Routes
+1400 - Routes
   - server.js routes now operational
+
+1400-1630 - Healthcare.gov API setup Failure
+  - .gov API (XML) giving us issues with setup. Contact BN about further plans
+  - betterdoctor.gov
+
