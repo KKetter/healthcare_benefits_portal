@@ -24,10 +24,11 @@ app.set('view engine', 'ejs');
 
 // ROUTES
 app.get('/', getIndex);
-app.get('/finderForm', function(req,res) {
-  res.render('views/pages/finderForm');
-});
+app.get('/finderForm', showForm);
 
+function showForm(req, res) {
+  res.render('views/pages/finderForm');
+}
 function getIndex(req, res) {
   res.render('index');
 }

@@ -1,7 +1,7 @@
-<section class="hide-form">
-  <form action="<%= 'update ' === formAction ? `/update/${task.id}` :'/add' %>" method="post" class="hide-form"></form>
-    <input type="hidden" name="_method" value="<%- 'update' === formAction ? 'put' : 'post' %>">
-    <input type="text" name="name" value="<%- 'x.name' %>" placeholder="doctor_name">
-    <input type="text" name="location" value="<%- 'x.location' %>" placeholder="provider">
+<section id ="form" class="hide-form">
+  <form action="submit" method="post"></form>
+    <input type="hidden" name="_method" value="">
+    <input type="text" name="name" value="" placeholder="location">
+    <button>Submit</button>
   </form>
 </section>
