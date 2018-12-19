@@ -29,9 +29,19 @@ app.get('/', getIndex);
 app.get('/location', getLocation);
 app.get('/providers', getProviders);
 
+//finderForm shows on button click - move this somewhere else
+function showForm(req, res) {
+  res.render('views/pages/finderForm');
+}
+
+
 // INDEX LOGIC
+
 function getIndex(req, res) {
   res.render('index');
+}
+function showResults(req, res) {
+  res.render('pages/finder');
 }
 
 // OBJECT CONSTRUCTOR
