@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 // ROUTES
 app.get('/', getIndex);
 app.get('/location', getLocation);
-app.get('/doctors', getProviders);
+// app.get('/doctors', getProviders);
 
 // INDEX LOGIC
 function getIndex(req, res) {
@@ -108,81 +108,55 @@ Location.lookupLocation = (handler) => {
     })
     .catch(error => handleError(error));
 };
-
-// DB GARBAGE COLLECTION
-Providers.clearDB = clearDB;
-
-// PROVIDERS LOGIC
 function getProviders(req, res) {
-  // console.log('getProviders console', req);
-  console.log('inside of getProviders', req.body);
-  const handler = {
+  const providersHandler = {
     location: req.query.data,
-    cacheHit: function (result) {
-      console.log('cacheHit is firing');
-      let dataAge = (Date.now() - result.rows[0].created_at) / (1000 * 60);
-      if (dataAge > 10080) {
-        Providers.clearDB(Providers.table, req.query.data.id);
-        console.log('delete SQL data');
-        Providers.fetchProviders(req.query.data)
-          .then(results => res.send(results))
-          .catch(error => errorHandler(error));
-      } else {
-        res.send(result.rows);
-      }
+    cacheHit: (result) => {
+      res.send(result.rows);
     },
-    cacheMiss: function () {
+    cacheMIss: () => {
       Providers.fetchProviders(req.query.data)
         .then(results => res.send(results))
-        .catch(error => errorHandler(error));
-      console.log('cacheMiss is firing');
-    }
+        .catch(error => handleError(error));
+    },
   };
-  console.log('inside getProviders', res.meta);
-  Providers.providerLookup(handler);
+  Providers.lookUpProviders(providersHandler);
 }
-Providers.providerLookup = function (handler) {
-  console.log('inside providerLookup', handler);
-  const SQL = `SELECT *
-  FROM locations
-  WHERE location_id=$1;`;
-  const vals = [handler.location.id];
-  client.query(SQL, vals)
+Providers.fetchProviders = function (location) {
+  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
+  return superagent.get(_URL)
+    .then(result => {
+      const providersDetials = result.bodt.data.map(doctor => {
+        const details = new Providers(doctor);
+        details.save(location.id);
+        return details;
+      });
+      return providersDetails;
+    })
+}
+Providers.lookUpProviders = function (handler) {
+  const SQL = `SELECT * FROM weathers WHERE location_id=$1;`;
+  client.query(SQL, [handler.location.id])
     .then(result => {
       if (result.rowCount > 0) {
-        console.log('Got data from SQL');
-        console.log(result);
+        console.log('got provider data from SQL');
         handler.cacheHit(result);
       } else {
-        console.log('Got data from API');
+        console.log('got provider data from API');
         handler.cacheMiss();
       }
     })
-    .catch(error => errorHandler(error));
-};
-Providers.fetchProviders = function (location) {
-  console.log('this is what location looks like HERE', location);
-  const providers_URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
-  console.log(providers_URL);
-  return superagent.get(providers_URL)
-    .then(result => {
-      console.log('myAPIcall', result);
-      const providersSummary = result.body.data.map(docs => {
-        const pSummary = new Providers(docs);
-        pSummary.save(location.id);
-        return pSummary;
-      });
-      return providersSummary;
-    });
-};
+    .catch(error => handleError(error));
+}
 Providers.prototype.save = function (id) {
-  const SQL = `INSERT INTO providers
-  (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id)
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
+  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
   const values = Object.values(this);
   values.push(id);
   client.query(SQL, values);
-};
+}
+// DB GARBAGE COLLECTION
+Providers.clearDB = clearDB;
+
 // DB GARBAGE COLLECTION FUNCTION
 function clearDB(table, city) {
   const clearTableData = `DELETE from ${table} WHERE location_id=${city};`;
