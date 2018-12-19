@@ -25,5 +25,6 @@
     "express": "^4.16.4",
     "pg": "^7.7.1",
     "superagent": "^4.0.0"
-  }
+  },
+  "description": "17 DEC 2018 LOG 0920 - Initial Planning   - API Listing   - Website Navigation Wireframe   - Intital View Wireframe   - Page Scaffolding"
 }
