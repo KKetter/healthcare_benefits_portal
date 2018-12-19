@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3001;
 const app = express(); // TODO: add pg URL
 const dbaddress = process.env.DATABASE_URL;
 const client = new pg.Client(dbaddress);
+// const bodyParser = require('body-parser');
 // CONNECT TO DB
 client.connect();
 client.on('error', err => console.error(err));
@@ -16,12 +17,13 @@ client.on('error', err => console.error(err));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 app.use(cors());
+// app.use(bodyParser);
 // SETUP VIEW ENGINE
 app.set('view engine', 'ejs');
 // ROUTES
 app.get('/', getIndex);
 app.get('/location', getLocation);
-// app.get('/doctors', getProviders);
+app.get('/doctors', getProviders);
 
 // INDEX LOGIC
 function getIndex(req, res) {
@@ -107,10 +109,11 @@ Location.lookupLocation = (handler) => {
       }
     })
     .catch(error => handleError(error));
-};
+}
 function getProviders(req, res) {
+  console.log('inside get providers line 114:', req.body)
   const providersHandler = {
-    location: req.query.data,
+    // location: req.query.data
     cacheHit: (result) => {
       res.send(result.rows);
     },
@@ -123,33 +126,36 @@ function getProviders(req, res) {
   Providers.lookUpProviders(providersHandler);
 }
 Providers.fetchProviders = function (location) {
+  console.log('inside fetchProvders line 129:', location)
   const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
   return superagent.get(_URL)
     .then(result => {
-      const providersDetials = result.bodt.data.map(doctor => {
+      const providersDetails = result.body.data.map(doctor => {
         const details = new Providers(doctor);
         details.save(location.id);
+        console.log('details in fetch providers:', details);
         return details;
       });
       return providersDetails;
     })
 }
 Providers.lookUpProviders = function (handler) {
-  const SQL = `SELECT * FROM weathers WHERE location_id=$1;`;
-  client.query(SQL, [handler.location.id])
+  const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
+  client.query(SQL, [handler.location_id]) // I changed this it made more errors but got rid of some location.id to location_id
     .then(result => {
       if (result.rowCount > 0) {
         console.log('got provider data from SQL');
         handler.cacheHit(result);
       } else {
         console.log('got provider data from API');
-        handler.cacheMiss();
+        handler.cacheMiss(Providers.fetchProviders()); //added Providers.fetchProviders()
       }
     })
     .catch(error => handleError(error));
 }
 Providers.prototype.save = function (id) {
-  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
+  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id)
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
   const values = Object.values(this);
   values.push(id);
   client.query(SQL, values);
