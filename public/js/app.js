@@ -11,7 +11,7 @@ $.get(resource_url, function (data)
 
 
 //Get Started form becomes visible to user
-$ ('#finderButton').on('click', function(event){
+$('#finderButton').on('click', function(event){
   event.preventDefault();
   console.log('clicked');
   $('#form').removeClass('hide-form');

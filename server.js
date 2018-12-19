@@ -16,6 +16,7 @@ client.on('error', err => console.error(err));
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
+app.use(express.json())
 app.use(cors());
 // app.use(bodyParser);
 // SETUP VIEW ENGINE
@@ -25,6 +26,7 @@ app.get('/', getIndex);
 app.get('/location', getLocation);
 app.post('/doctors', getProviders);
 
+let currentLoc = [];
 // INDEX LOGIC
 function getIndex(req, res) {
   res.render('index');
@@ -57,11 +59,15 @@ function getLocation(req, res) {
     query: req.query.data,
     cacheHit: (results) => {
       res.send(results.rows[0]);
+      currentLoc.push(results.rows[0]);
+      console.log('info we need cacheHit:',currentLoc)
     },
     cacheMiss: () => {
       Location.fetchLocation(req.query.data)
         .then((data) => {
           res.send(data);
+          currentLoc.push(data);
+          console.log('info we need cacheMiss:',currentLoc);
         });
     },
   };
@@ -111,9 +117,7 @@ Location.lookupLocation = (handler) => {
     .catch(error => handleError(error));
 }
 function getProviders(req, res) {
-  console.log('inside get providers line 114:', req.body)
   const providersHandler = {
-    location: req.query.data,
     cacheHit: (result) => {
       res.send(result.rows);
     },
@@ -125,15 +129,14 @@ function getProviders(req, res) {
   };
   Providers.lookUpProviders(providersHandler);
 }
-Providers.fetchProviders = function (location) {
-  console.log('inside fetchProvders line 129:', location)
-  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
+Providers.fetchProviders = function (currentLoc) {
+  console.log('please work:',currentLoc.latitude);
+  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${currentLoc.latitude}%2C${currentLoc.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
   return superagent.get(_URL)
     .then(result => {
       const providersDetails = result.body.data.map(doctor => {
         const details = new Providers(doctor);
         details.save(location.id);
-        console.log('details in fetch providers:', details);
         return details;
       });
       return providersDetails;
@@ -148,6 +151,7 @@ Providers.lookUpProviders = function (handler) {
         handler.cacheHit(result);
       } else {
         console.log('got provider data from API');
+        console.log('please work:',currentLoc);
         handler.cacheMiss(Providers.fetchProviders()); //added Providers.fetchProviders()
       }
     })
