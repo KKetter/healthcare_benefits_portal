@@ -9,5 +9,10 @@ $ ('#finderButton').on('click', function(event){
   $('#form').addClass('show-form');
 });
 
+$ ('#submitButton').on('click', function(event){
+  event.preventDefault();
+  location.assign('/doctors');
+});
+
 //update css classes to reflect needed styles
 //make form visible for testing purposes-make sure form is rendered to begin with

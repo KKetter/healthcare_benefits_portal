@@ -25,12 +25,16 @@ app.set('view engine', 'ejs');
 // ROUTES
 app.get('/', getIndex);
 app.get('/finderForm', showForm);
+app.get('/doctors', showResults);
 
 function showForm(req, res) {
   res.render('views/pages/finderForm');
 }
 function getIndex(req, res) {
   res.render('index');
+}
+function showResults(req, res) {
+  res.render('pages/finder');
 }
 
 // ERROR MANAGEMENT
