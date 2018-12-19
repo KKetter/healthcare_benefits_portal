@@ -11,11 +11,16 @@ CREATE TABLE locations (
 
 CREATE TABLE providers (
   id SERIAL PRIMARY KEY,
-  practices VARCHAR(255),
-  site VARCHAR(255),
-  new_patients BOOLEAN,
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
+  title VARCHAR(24),
   image VARCHAR(255),
-  hours VARCHAR(255),
+  practice_name VARCHAR(255),
+  street_address VARCHAR(255),
+  city VARCHAR(255),
+  state VARCHAR(3),
+  zip VARCHAR(10),
+  insurance VARCHAR(255),
   phone VARCHAR(255),
   location_id INTEGER NOT NULL,
   FOREIGN KEY (location_id) REFERENCES locations (id)
