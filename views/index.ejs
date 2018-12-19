@@ -6,16 +6,13 @@
   <div>
     <h1>Welcome!</h1>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <button>Deductible Tracker</button>
-    <button>Out of Pocket Cost Tracker</button>
-    <button>healthcare.gov FINDER API</button>
-    <button>Medicare Information</button>
-    <button>Glossary</button>
+    <button type="submit" id="finderButton" click='submit'>Get Started!</button>
+    <%- include("../views/pages/finderForm.ejs") %>
   </div>
   <footer><%- include("../views/layout/footer.ejs") %></footer>
   <script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.amd.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>
