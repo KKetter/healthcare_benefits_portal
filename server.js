@@ -23,7 +23,7 @@ app.set('view engine', 'ejs');
 // ROUTES
 app.get('/', getIndex);
 app.get('/location', getLocation);
-app.get('/doctors', getProviders);
+app.post('/doctors', getProviders);
 
 // INDEX LOGIC
 function getIndex(req, res) {
@@ -113,7 +113,7 @@ Location.lookupLocation = (handler) => {
 function getProviders(req, res) {
   console.log('inside get providers line 114:', req.body)
   const providersHandler = {
-    // location: req.query.data
+    location: req.query.data,
     cacheHit: (result) => {
       res.send(result.rows);
     },
