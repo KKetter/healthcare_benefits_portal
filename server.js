@@ -9,13 +9,16 @@ const PORT = process.env.PORT || 3001;
 const app = express(); // TODO: add pg URL
 const dbaddress = process.env.DATABASE_URL;
 const client = new pg.Client(dbaddress);
+// const bodyParser = require('body-parser');
 // CONNECT TO DB
 client.connect();
 client.on('error', err => console.error(err));
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
+app.use(express.json())
 app.use(cors());
+// app.use(bodyParser);
 // SETUP VIEW ENGINE
 app.set('view engine', 'ejs');
 // ROUTES
@@ -23,6 +26,7 @@ app.get('/', getIndex);
 app.get('/location', getLocation);
 app.get('/doctors', getProviders);
 
+let currentLoc = [];
 // INDEX LOGIC
 function getIndex(req, res) {
   res.render('index');
@@ -55,11 +59,15 @@ function getLocation(req, res) {
     query: req.query.data,
     cacheHit: (results) => {
       res.send(results.rows[0]);
+      currentLoc.push(results.rows[0]);
+      console.log('info we need cacheHit:',currentLoc)
     },
     cacheMiss: () => {
       Location.fetchLocation(req.query.data)
         .then((data) => {
           res.send(data);
+          currentLoc.push(data);
+          console.log('info we need cacheMiss:',currentLoc);
         });
     },
   };
@@ -107,82 +115,58 @@ Location.lookupLocation = (handler) => {
       }
     })
     .catch(error => handleError(error));
-};
-
-// DB GARBAGE COLLECTION
-Providers.clearDB = clearDB;
-
-// PROVIDERS LOGIC
+}
 function getProviders(req, res) {
-  // console.log('getProviders console', req);
-  console.log('inside of getProviders', req.body);
-  const handler = {
-    location: req.query.data,
-    cacheHit: function (result) {
-      console.log('cacheHit is firing');
-      let dataAge = (Date.now() - result.rows[0].created_at) / (1000 * 60);
-      if (dataAge > 10080) {
-        Providers.clearDB(Providers.table, req.query.data.id);
-        console.log('delete SQL data');
-        Providers.fetchProviders(req.query.data)
-          .then(results => res.send(results))
-          .catch(error => errorHandler(error));
-      } else {
-        res.send(result.rows);
-      }
+  const providersHandler = {
+    cacheHit: (result) => {
+      res.send(result.rows);
     },
-    cacheMiss: function () {
+    cacheMIss: () => {
       Providers.fetchProviders(req.query.data)
         .then(results => res.send(results))
-        .catch(error => errorHandler(error));
-      console.log('cacheMiss is firing');
-    }
+        .catch(error => handleError(error));
+    },
   };
-  console.log('inside getProviders', res.meta);
-  Providers.providerLookup(handler);
+  Providers.lookUpProviders(providersHandler);
 }
-Providers.providerLookup = function (handler) {
-  console.log('inside providerLookup', handler);
-  const SQL = `SELECT *
-  FROM locations
-  WHERE location_id=$1;`;
-  const vals = [handler.location.id];
-  client.query(SQL, vals)
+Providers.fetchProviders = function () {
+  console.log('please work: ',currentLoc[0].latitude, currentLoc[0].longitude);
+  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${currentLoc[0].latitude}%2C${currentLoc[0].longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
+  return superagent.get(_URL)
+    .then(result => {
+      const providersDetails = result.body.data.map(doctor => {
+        const details = new Providers(doctor);
+        details.save(location.id);
+        return details;
+      });
+      return providersDetails;
+      
+    }).catch(error => handleError(error));
+}
+Providers.lookUpProviders = function (handler) {
+  const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
+  client.query(SQL, [handler.location_id]) // I changed this it made more errors but got rid of some location.id to location_id
     .then(result => {
       if (result.rowCount > 0) {
-        console.log('Got data from SQL');
-        console.log(result);
+        console.log('got provider data from SQL');
         handler.cacheHit(result);
       } else {
-        console.log('Got data from API');
-        handler.cacheMiss();
+        console.log('got provider data from API');
+      Providers.fetchProviders();
       }
     })
-    .catch(error => errorHandler(error));
-};
-Providers.fetchProviders = function (location) {
-  console.log('this is what location looks like HERE', location);
-  const providers_URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
-  console.log(providers_URL);
-  return superagent.get(providers_URL)
-    .then(result => {
-      console.log('myAPIcall', result);
-      const providersSummary = result.body.data.map(docs => {
-        const pSummary = new Providers(docs);
-        pSummary.save(location.id);
-        return pSummary;
-      });
-      return providersSummary;
-    });
-};
+    .catch(error => handleError(error));
+}
 Providers.prototype.save = function (id) {
-  const SQL = `INSERT INTO providers
-  (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id)
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
+  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id)
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
   const values = Object.values(this);
   values.push(id);
   client.query(SQL, values);
-};
+}
+// DB GARBAGE COLLECTION
+Providers.clearDB = clearDB;
+
 // DB GARBAGE COLLECTION FUNCTION
 function clearDB(table, city) {
   const clearTableData = `DELETE from ${table} WHERE location_id=${city};`;
