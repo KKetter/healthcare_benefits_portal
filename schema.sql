@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS providers;
+DROP TABLE IF EXISTS locations;
 
 CREATE TABLE locations (
   id SERIAL PRIMARY KEY,
@@ -20,8 +20,7 @@ CREATE TABLE providers (
   city VARCHAR(255),
   state VARCHAR(3),
   zip VARCHAR(10),
-  insurance VARCHAR(255),
   phone VARCHAR(255),
-  location_id INTEGER NOT NULL,
+  location_id INTEGER,
   FOREIGN KEY (location_id) REFERENCES locations (id)
 );

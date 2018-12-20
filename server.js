@@ -43,15 +43,12 @@ function Providers(data) {
   this.last_name = data.profile.last_name;
   this.title = data.profile.title;
   this.image = data.profile.image_url;
-  this.practice_name = data.practices.name;
-  this.street_address = data.practices.visit_address.street;
-  this.city = data.practices.visit_address.city;
-  this.state = data.practices.visit_address.state;
-  this.zip = data.practices.visit_address.zip;
-  this.insurance = data.practices.insurance_uids;
-  this.phone = data.practices.phones.number;
-  this.table = 'providers';
-  this.created_time = new Date(data.time * 1000).toDateString();
+  this.practice_name = data.practices[0].name;
+  this.street_address = data.practices[0].visit_address.street;
+  this.city = data.practices[0].visit_address.city;
+  this.state = data.practices[0].visit_address.state;
+  this.zip = data.practices[0].visit_address.zip;
+  this.phone = data.practices[0].phones[0].number;
 }
 // LOCATION LOGIC
 function getLocation(req, res) {
@@ -60,15 +57,15 @@ function getLocation(req, res) {
     cacheHit: (results) => {
       res.send(results.rows[0]);
       currentLoc.push(results.rows[0]);
-      console.log('info we need cacheHit:',currentLoc)
+      console.log('info we need cacheHit:', currentLoc)
     },
     cacheMiss: () => {
       Location.fetchLocation(req.query.data)
         .then((data) => {
           res.send(data);
           currentLoc.push(data);
-          console.log('info we need cacheMiss:',currentLoc);
-        });
+          console.log('info we need cacheMiss:', currentLoc);
+        }).catch(error => handleError(error));
     },
   };
   Location.lookupLocation(handler);
@@ -88,7 +85,7 @@ Location.fetchLocation = (query) => {
           });
         return location;
       }
-    });
+    }).catch(error => handleError(error));
 };
 Location.prototype.save = function () {
   let SQL = `INSERT INTO locations
@@ -100,9 +97,7 @@ Location.prototype.save = function () {
 };
 
 Location.lookupLocation = (handler) => {
-  const SQL = `SELECT *
-  FROM locations
-  WHERE search_query=$1`;
+  const SQL = `SELECT * FROM locations WHERE search_query=$1`;
   const values = [handler.query];
   return client.query(SQL, values)
     .then(results => {
@@ -130,39 +125,38 @@ function getProviders(req, res) {
   Providers.lookUpProviders(providersHandler);
 }
 Providers.fetchProviders = function () {
-  console.log('please work: ',currentLoc[0].latitude, currentLoc[0].longitude);
   const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${currentLoc[0].latitude}%2C${currentLoc[0].longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
   return superagent.get(_URL)
     .then(result => {
+      console.log(result.body);
       const providersDetails = result.body.data.map(doctor => {
         const details = new Providers(doctor);
-        details.save(location.id);
+        details.save();
         return details;
       });
-      return providersDetails;
-      
+      console.log(providersDetails);
     }).catch(error => handleError(error));
-}
+    return details;
+  }
 Providers.lookUpProviders = function (handler) {
   const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
-  client.query(SQL, [handler.location_id]) // I changed this it made more errors but got rid of some location.id to location_id
+  client.query(SQL, [handler.id])
     .then(result => {
       if (result.rowCount > 0) {
         console.log('got provider data from SQL');
         handler.cacheHit(result);
       } else {
         console.log('got provider data from API');
-      Providers.fetchProviders();
+        Providers.fetchProviders();
       }
     })
     .catch(error => handleError(error));
 }
-Providers.prototype.save = function (id) {
-  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, insurance, phone, created_time, location_id)
-   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);`;
+Providers.prototype.save = function () {
+  const SQL = `INSERT INTO providers (first_name, last_name, title, image, practice_name, street_address, city, state, zip, phone)
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id;`;
   const values = Object.values(this);
-  values.push(id);
-  client.query(SQL, values);
+  return client.query(SQL, values);
 }
 // DB GARBAGE COLLECTION
 Providers.clearDB = clearDB;
