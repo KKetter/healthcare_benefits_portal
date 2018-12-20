@@ -121,6 +121,7 @@ function Providers(data) {
 
 function getProviders(req, res) {
   const handler = {
+    location: req.query.data,
     cacheHit: (result) => {
       currentLoc.push(result);
       res.send(result.rows);
@@ -150,13 +151,15 @@ Providers.fetchProviders = function () {
 };
 Providers.lookUpProviders = function (handler) {
   const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
-  client.query(SQL, [handler.query])
-    .then(result => {
+  console.log('client query', handler.location_id);
+  client.query(SQL, [handler.location.id])
+  .then(result => {
+    console.log('result stuff', result.rowCount);
       if (result.rowCount > 0) {
-        console.log('got provider data from SQL');
+        console.log('got provider data from SQL', result.rowCount);
         handler.cacheHit(result);
       } else {
-        console.log('got provider data from API');
+        console.log('got provider data from API', result.rowCount);
         Providers.fetchProviders();
       }
     })

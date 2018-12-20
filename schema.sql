@@ -21,6 +21,6 @@ CREATE TABLE providers (
   state VARCHAR(3),
   zip VARCHAR(10),
   phone VARCHAR(255),
-  location_id INTEGER,
+  location_id INTEGER NOT NULL,
   FOREIGN KEY (location_id) REFERENCES locations (id)
 );
