@@ -27,6 +27,7 @@ app.get('/doctors', getProviders);
 function getIndex(req, res) {
   res.render('index');
 }
+
 // OBJECT CONSTRUCTOR
 function Location(query, data) {
   this.search_query = query;
