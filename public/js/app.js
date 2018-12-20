@@ -14,3 +14,5 @@ $ ('#submitButton').on('click', function(event){
   event.preventDefault();
   location.assign('/doctors');
 });
+
+//Button fix
