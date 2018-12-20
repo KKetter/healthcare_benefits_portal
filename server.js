@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 // ROUTES
 app.get('/', getIndex);
 app.get('/location', getLocation);
-app.post('/doctors', getProviders);
+app.get('/doctors', getProviders);
 
 let currentLoc = [];
 // INDEX LOGIC
@@ -129,9 +129,9 @@ function getProviders(req, res) {
   };
   Providers.lookUpProviders(providersHandler);
 }
-Providers.fetchProviders = function (currentLoc) {
-  console.log('please work:',currentLoc.latitude);
-  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${currentLoc.latitude}%2C${currentLoc.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
+Providers.fetchProviders = function () {
+  console.log('please work: ',currentLoc[0].latitude, currentLoc[0].longitude);
+  const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${currentLoc[0].latitude}%2C${currentLoc[0].longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
   return superagent.get(_URL)
     .then(result => {
       const providersDetails = result.body.data.map(doctor => {
@@ -140,7 +140,8 @@ Providers.fetchProviders = function (currentLoc) {
         return details;
       });
       return providersDetails;
-    })
+      
+    }).catch(error => handleError(error));
 }
 Providers.lookUpProviders = function (handler) {
   const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
@@ -151,8 +152,7 @@ Providers.lookUpProviders = function (handler) {
         handler.cacheHit(result);
       } else {
         console.log('got provider data from API');
-        console.log('please work:',currentLoc);
-        handler.cacheMiss(Providers.fetchProviders()); //added Providers.fetchProviders()
+      Providers.fetchProviders();
       }
     })
     .catch(error => handleError(error));
