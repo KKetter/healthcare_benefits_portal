@@ -1,0 +1,363 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:700');
+
+html {
+  font-family: 'Lato', sans-serif;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 150vw;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100vw;
+  background-image: url(../images/dr-background.jpg.png);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  display: block;
+}
+
+a {
+  transition: color 0.3s ease;
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(25, 120, 175);
+}
+
+#toggleMenu {
+  display: block;
+  position: relative;
+  top: 4vw;
+  right: 6vw;
+  float: right;
+  z-index: 1;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#toggleMenu input {
+  display: block;
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 2;
+  -webkit-touch-callout: none;
+}
+
+#toggleMenu span {
+  display: block;
+  width: 33px;
+  height: 4px;
+  margin-bottom: 5px;
+  position: relative;
+  background: black;
+  border-radius: 3px;
+  z-index: 1;
+  transform-origin: 4px 0px;
+  transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+              background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+              opacity 0.55s ease;
+}
+
+#toggleMenu span:first-child {
+  transform-origin: 0% 0%;
+}
+
+#toggleMenu span:nth-last-child(2) {
+  transform-origin: 0% 100%;
+}
+
+#toggleMenu input:checked ~ span {
+  opacity: 1;
+  transform: rotate(45deg) translate(-2px, -1px);
+  background: #232323;
+}
+
+#toggleMenu input:checked ~ span:nth-last-child(3) {
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+
+#toggleMenu input:checked ~ span:nth-last-child(2) {
+  transform: rotate(-45deg) translate(0, -1px);
+}
+
+#menu {
+  position: absolute;
+  width: 80vw;
+  margin: -100px 0 0 -60vw;
+  padding: 50px;
+  background-image: linear-gradient(white, white, rgba(255, 255, 255, 0));
+  list-style-type: none;
+  -webkit-font-smoothing: antialiased;
+  transform-origin: 0% 0%;
+  transform: translate(0, -260%);
+  transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+}
+
+#menu li {
+  display: inline;
+  padding: 5vw;
+  line-height: 7vw;
+  font-size: 22px;
+  font-family: 'Lato', sans-serif;
+}
+
+#toggleMenu input:checked ~ ul {
+  transform: none;
+}
+
+header {
+  width: 100%;
+  height: 26vw;
+  background-image: linear-gradient(white, white, rgba(255, 255, 255, 0));
+}
+
+.logo-font {
+  order: 2;
+  font-size: 4vw;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 10vw;
+}
+
+.logo {
+  float: left;
+  display: flex;
+}
+
+.logo-img {
+  order: 1;
+  margin: 2vw 1vw 2vw 2vw;
+  width: 6vw;
+  height: 6vw;
+}
+
+footer {
+  width: 100vw;
+  height: 10vw;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.0));
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0 0 0 0;
+}
+
+.footer-text {
+  width: 100%;
+}
+
+.footer {
+  font-size: 1.5vw;
+  margin: 2vw 0 2vw 0;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+}
+
+.hamburger {
+  width: 4vw;
+  height: 4vw;
+}
+
+.right {
+  margin: 2vw 2.5vw;
+  float: right;
+  background-color: rgba(0, 0, 0, 0.0);
+  border: none;
+}
+
+.intro {
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  width: 100%;
+}
+
+.welcome {
+  font-size: 6vw;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  margin: 0 0 3vw 0;
+}
+
+#find {
+  width: 80vw;
+}
+
+.container-s {
+  width: 50%;
+  height: 10vw;
+  line-height: 10vw;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.0));
+  margin: 2vw auto 2vw auto;
+  border-radius: 1vw;
+}
+
+.container-l {
+  width: 80%;
+  background-color: rgba(255, 255, 255, 0.75);
+  margin: 0 auto 0 auto;
+  padding: 2vw;
+  border-radius: 1vw;
+}
+
+.landing {
+  font-size: 2vw;
+  width: 100%;
+  margin: 4vw auto 4vw auto;
+}
+
+#finderButton {
+  margin: 2vw auto 2vw auto;
+  font-size: 3vw;
+  padding: 2vw 10vw 2vw 10vw;
+  border-radius: 0.5vw;
+  background-color: rgba(0, 121, 194, 0.95);
+  font-family: 'Lato', sans-serif;
+  color: white;
+}
+
+#finderButton:hover {
+  background-color: rgba(0, 121, 194, 0.5);
+  background-image: none;
+}
+
+#submitButton {
+  padding: 1vw 10vw 1vw 10vw;
+  margin: 2vw auto 2vw auto;
+  font-size: 2.5vw;
+  font-family: 'Lato', sans-serif;
+  border-radius: 0.5vw;
+  background-image: linear-gradient(rgb(25, 120, 175), rgb(57, 164, 226), white);
+}
+
+#submitButton:hover {
+  background-color: rgb(25, 120, 175);
+  background-image: none;
+}
+
+#form {
+  width: 40vw;
+  margin: 2vw auto 2vw auto;
+}
+
+input {
+  width: 36vw;
+  height: 4vw;
+  line-height: 4vw;
+  font-size: 3vw;
+  text-align: center;
+}
+
+@media (max-width: 750px) {
+  body {
+    background-image: linear-gradient(white, white, rgb(57, 164, 226),rgb(25, 120, 175));
+  }
+
+  .container-l {
+    background-image: linear-gradient(white, rgb(25, 120, 175), rgb(57, 164, 226), white, white, white);
+    margin: 0 auto 0 auto;
+    padding: 5vw;
+    border-radius: 1vw;
+  }
+
+  .container-s {
+    margin: 0;
+  }
+
+  .landing {
+    font-size: 5vw;
+  }
+
+  .container-s {
+    width: 80%;
+    margin: 5vw auto 5vw auto;
+    padding: 5vw 0 5vw 0;
+  }
+
+  .welcome {
+    font-size: 6vw;
+    line-height: 5vw;
+    margin-bottom: 0;
+  }
+
+  #finderButton {
+    padding: 3vw 24vw 3vw 24vw;
+    border-radius: 1vw;
+    font-size: 5vw;
+  }
+
+  #submitButton {
+    padding: 3vw 10vw 3vw 10vw;
+    border-radius: 1vw;
+    font-size: 5vw;
+  }
+
+  header {
+    height: 16vw;
+  }
+  
+  footer {
+    height: 20vw;
+  }
+
+  #find {
+    background-image: linear-gradient(rgb(25, 120, 175), rgb(57, 164, 226), white, white);
+    width: 80vw;
+    margin-bottom: 0;
+  }
+
+  .footer {
+    margin: 4vw 0 0 0;
+    font-size: 4vw;
+  }
+
+  .hamburger {
+    width: 8vw;
+    height: 8vw;
+  }
+
+  .right {
+    margin: 3.5vw 5vw 2.5vw 2.5vw;
+  }
+
+  input {
+    width: 80vw;
+    height: 10vw;
+    line-height: 10vw;
+    font-size: 5vw;
+  }
+
+  #form {
+    width: auto;
+  }
+
+  .logo-font {
+    margin: 1vw 0 0 1vw;
+    line-height: 16vw;
+    font-size: 8vw;
+  }
+
+  .logo-img {
+    width: 14vw;
+    height: 14vw;
+  }
+
+  #menu {
+    margin: -100px 0 0 -90vw;
+    height: 200vw;
+    background-image: none;
+    background-color: white;
+  }
+
+  #menu li {
+    margin: 35vw 0 35vw 0;
+    display: block;
+    text-align: center;
+  }
+}
