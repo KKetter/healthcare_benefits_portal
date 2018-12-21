@@ -4,9 +4,5 @@ $ ('#finderButton').on('click', function(event){
   console.log('finder button clicked');
   $('#form').removeClass('hide-form');
   $('#form').addClass('show-form');
-});
-
-$ ('#submitButton').on('click', function(event){
-  event.preventDefault();
-  location.assign('/doctors');
+  $('#finderButton').addClass('hide-form');
 });
