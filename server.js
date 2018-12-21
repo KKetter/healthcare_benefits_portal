@@ -16,7 +16,7 @@ client.on('error', err => console.error(err));
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
-app.use(express.json())
+app.use(express.json());
 app.use(cors());
 // app.use(bodyParser);
 // SETUP VIEW ENGINE
@@ -25,11 +25,17 @@ app.set('view engine', 'ejs');
 app.get('/', getIndex);
 app.get('/location', getLocation);
 app.get('/doctors', getProviders);
+//finder.ejs appearance after button click ***
+app.get('/results', showResults);
 
 let currentLoc = [];
 // INDEX LOGIC
 function getIndex(req, res) {
   res.render('index');
+}
+//finder LOGIC ***
+function showResults(req, res) {
+  res.render('../views/pages/finder');
 }
 // OBJECT CONSTRUCTOR
 function Location(query, data) {
@@ -137,7 +143,7 @@ Providers.fetchProviders = function () {
       console.log(providersDetails);
     }).catch(error => handleError(error));
     return details;
-  }
+};
 Providers.lookUpProviders = function (handler) {
   const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
   client.query(SQL, [handler.id])
