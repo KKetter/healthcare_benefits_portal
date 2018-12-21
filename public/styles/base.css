@@ -5,7 +5,7 @@ html {
   font-family: 'Lato', sans-serif;
   box-sizing: border-box;
   height: 100%;
-  min-height: 150vw;
+  min-height: 320vw;
   position: relative;
   overflow-x: hidden;
 }
@@ -138,6 +138,10 @@ header {
   height: 6vw;
 }
 
+.result {
+  margin: 2vw 0 2vw 0;
+}
+
 footer {
   width: 100vw;
   height: 10vw;
@@ -198,12 +202,30 @@ footer {
   border-radius: 1vw;
 }
 
+.container-m {
+  width: 25%;
+  background-color: rgba(255, 255, 255, 0.75);
+  margin: 0 auto 2vw auto;
+  padding: 2vw;
+  border-radius: 1vw;
+}
+
 .container-l {
   width: 80%;
   background-color: rgba(255, 255, 255, 0.75);
   margin: 0 auto 0 auto;
   padding: 2vw;
   border-radius: 1vw;
+}
+
+.prof-pic {
+  width: 12vw;
+  height: auto;
+  margin: 0 25% 0 25%;
+}
+
+.center {
+  width: 100%;
 }
 
 .landing {
@@ -238,6 +260,21 @@ footer {
 
 #submitButton:hover {
   background-color: rgb(25, 120, 175);
+  background-image: none;
+}
+
+#resetButton {
+  margin: 2vw 10vw 2vw 30vw;
+  font-size: 3vw;
+  padding: 2vw 10vw 2vw 10vw;
+  border-radius: 0.5vw;
+  background-color: rgba(0, 121, 194, 0.95);
+  font-family: 'Lato', sans-serif;
+  color: white;
+}
+
+#resetButton:hover {
+  background-color: rgba(0, 121, 194, 0.5);
   background-image: none;
 }
 

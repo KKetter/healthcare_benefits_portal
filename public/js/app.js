@@ -8,5 +8,5 @@ $ ('#finderButton').on('click', function(event){
 
 $ ('#submitButton').on('click', function(event){
   event.preventDefault();
-  location.assign('/doctors');
+  location.assign('/finder');
 });

@@ -26,14 +26,19 @@ app.set('view engine', 'ejs');
 app.get('/', getIndex);
 app.get('/location', getLocation);
 app.get('/doctors', getProviders);
+//finder.ejs appearance after button click ***
+app.get('/results', showResults);
 
 let currentLoc = [];
 // INDEX LOGIC
 function getIndex(req, res) {
   res.render('index');
 }
-function renderFinder(req, res) {
-  res.render('/views/pages/finder.ejs')
+
+//finder LOGIC ***
+function showResults(req, res) {
+  res.render('../views/pages/finder');
+
 }
 // OBJECT CONSTRUCTOR
 function Location(query, data) {
@@ -148,6 +153,7 @@ Providers.fetchProviders = function () {
       });
       return providerDetails;
     }).catch(error => handleError(error));
+    return details;
 };
 Providers.lookUpProviders = function (handler) {
   const SQL = `SELECT * FROM providers WHERE location_id=$1;`;
