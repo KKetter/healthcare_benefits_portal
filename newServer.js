@@ -5,9 +5,12 @@ const superagent = require('superagent');
 const app = express();
 const cors = require('cors');
 const pg = require('pg');
+const bodyparser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 
 require('dotenv').config();
+
+console.log('im in the right file');
 
 const dbaddress = process.env.DATABASE_URL;
 const client = new pg.Client(dbaddress);
@@ -23,6 +26,7 @@ app.use(cors());
 app.set('view engine', 'ejs');
 
 app.get('/', getIndex);
+app.post('/finder', getProviders);
 
 function getIndex(req, res) {
   res.render('index');
@@ -35,7 +39,8 @@ function getProviders(req, res) {
 app.get('/finder', getProviders);
 
 app.get('/location', (req, res) => {
-  searchToLatLong(req.query.data)
+  console.log(req.body.citysearch);
+  searchToLatLong(req.body.citysearch)
     .then(location => {
       const _URL = `https://api.betterdoctor.com/2016-03-01/doctors?location=${location.latitude}%2C${location.longitude}%2C100&skip=0&limit=10&user_key=${process.env.BETTERDOCTOR_API_KEY}`;
       return superagent.get(_URL).then(result => {
