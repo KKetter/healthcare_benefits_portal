@@ -11,11 +11,11 @@
             <% doctor.forEach( el => { %>
               <div class="container-m result">
               <li><div class="center"><img class="prof-pic" src="<%= el.profile.image_url %>"></li>
-              <li class="details">Name: <%= el.profile.first_name %> <%= el.profile.last_name %>, <%= el.profile.title %></li>
-              <li class="details">Insurance: <%= el.insurances[0].insurance_plan.name %></li>
-              <li class="details">Practice: <%= el.practices[0].name %></li>
-              <li class="details">Address: <%= el.practices[0].visit_address.street %>, <%= el.practices[0].visit_address.city %>, <%= el.practices[0].visit_address.state %> <%= el.practices[0].visit_address.zip %></li>
-              <li class="details">Specialties: <%= el.specialties[0].name %></li>
+              <li class="details"><span class="attributes">Name:</span> <%= el.profile.first_name %> <%= el.profile.last_name %>, <%= el.profile.title %></li>
+              <li class="details"><span class="attributes">Insurance:</span> <%= el.insurances[0].insurance_plan.name %></li>
+              <li class="details"><span class="attributes">Practice:</span> <%= el.practices[0].name %></li>
+              <li class="details"><span class="attributes">Address:</span> <%= el.practices[0].visit_address.street %>, <%= el.practices[0].visit_address.city %>, <%= el.practices[0].visit_address.state %> <%= el.practices[0].visit_address.zip %></li>
+              <li class="details"><span class="attributes">Specialties:</span> <%= el.specialties[0].name %></li>
             </div>
             <% }) %>
           </ul>

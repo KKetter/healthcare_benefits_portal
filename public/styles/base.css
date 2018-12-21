@@ -23,6 +23,12 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+.attributes {
+  font-family: 'Lato', sans-serif;
+  color: rgb(25, 120, 175);
+  font-weight: bold;
+}
+
 a {
   transition: color 0.3s ease;
   color: black;
@@ -110,7 +116,7 @@ a:hover {
 #menu li {
   display: inline;
   padding: 5vw;
-  line-height: 7vw;
+  line-height: 6vw;
   font-size: 22px;
   font-family: 'Lato', sans-serif;
 }
@@ -121,7 +127,7 @@ a:hover {
 
 header {
   width: 100%;
-  height: 26vw;
+  height: 20vw;
   background-image: linear-gradient(white, white, rgba(255, 255, 255, 0));
 }
 
