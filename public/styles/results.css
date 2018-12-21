@@ -1,0 +1,14 @@
+html {
+  min-height: 340vw;
+}
+
+@media (max-width: 750px) {
+  html {
+    height: 650vw;
+  }
+
+  .reset-location {
+    font-size: 4vw;
+    margin: 0 20% 0 30%;
+  }
+}

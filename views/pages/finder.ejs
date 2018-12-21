@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include("../layout/head.ejs") %>
+<%- include("../layout/results-head.ejs") %>
 <body>
   <%- include("../layout/header.ejs") %>
   <div>
     <div class="container-s">
       <h1 class="welcome">Results</h1>
-    </div> <!--TODO: write forEach loop to iterate through 10 providers found-->
+        </div> <!--TODO: write forEach loop to iterate through 10 providers found-->
           <ul class="results-list"> <!--TODO: build out ejs data-->
             <% doctor.forEach( el => { %>
               <div class="container-m result">
               <li><div class="center"><img class="prof-pic" src="<%= el.profile.image_url %>"></li>
-              <li>Name: <%= el.profile.first_name %> <%= el.profile.last_name %>, <%= el.profile.title %></li>
-              <li>Practice: <%= el.practices[0].name %></li>
-              <li>Address: <%= el.practices[0].visit_address.street %>, <%= el.practices[0].visit_address.city %>, <%= el.practices[0].visit_address.state %> <%= el.practices[0].visit_address.zip %></li>
-              <li>Phone: <%= el.practices[0].phones.number %></li>
+              <li class="details">Name: <%= el.profile.first_name %> <%= el.profile.last_name %>, <%= el.profile.title %></li>
+              <li class="details">Insurance: <%= el.insurances[0].insurance_plan.name %></li>
+              <li class="details">Practice: <%= el.practices[0].name %></li>
+              <li class="details">Address: <%= el.practices[0].visit_address.street %>, <%= el.practices[0].visit_address.city %>, <%= el.practices[0].visit_address.state %> <%= el.practices[0].visit_address.zip %></li>
+              <li class="details">Specialties: <%= el.specialties[0].name %></li>
             </div>
             <% }) %>
           </ul>
+        </div>
+      <div class="container-s reset"><a class="reset-location" href="/">RESET LOCATION</a></div>
     </div>
-    <button type="submit" id="resetButton" click="submit">
-        Reset Location
-      </button>
-  </div>
   <%- include("../layout/footer.ejs") %>
   <%- include("../layout/scripts.ejs") %>
 </body>
