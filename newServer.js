@@ -38,7 +38,7 @@ function getProviders(req, res) {
 
 app.get('/finder', getProviders);
 
-app.get('/location', (req, res) => {
+app.post('/location', (req, res) => {
   console.log(req.body.citysearch);
   searchToLatLong(req.body.citysearch)
     .then(location => {
