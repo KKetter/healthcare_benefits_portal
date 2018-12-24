@@ -11,7 +11,16 @@ Heroku Link: healthcare-calc.herokuapp.com
 1005 - Stand Up
   - HIPA Pivot: Due to federal law we can not store any PHI so value added must come from information org not personal reccomendations
   - Page Scaffold Complete - index, tracker, finder pages
-  - server setup
+  - server setup:
+  - Create a package for JSON file	
+  - Enable Javascript framework that allows us to run npi
+  - Enable Cross origin resource sharing to allow sharing in the same domain.	
+  - Create Basic Server
+  - Database Config
+  - Connect to DB
+  - Handle Middleware
+  - Setup view engine
+  - Set up error management
   - branch "server"
 
 1030 - github setup
